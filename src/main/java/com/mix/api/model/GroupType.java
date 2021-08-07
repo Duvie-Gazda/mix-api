@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "group_types")
@@ -22,6 +23,6 @@ public class GroupType {
 
 //    RELATIONS
 
-    @ManyToMany
-    private List<Group> groups;
+    @ManyToMany (cascade = CascadeType.REMOVE )
+    private Set<Group> groups;
 }

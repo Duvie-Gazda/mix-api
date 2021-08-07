@@ -23,11 +23,11 @@ public class Group {
 
 //    RELATIONS
 
-    @ManyToMany
-    private List<GroupType> groupTypeList;
+    @ManyToMany (cascade = CascadeType.REMOVE)
+    private Set<GroupType> groupTypeList;
 
-    @ManyToMany
-    private List<User> users;
+    @ManyToMany (cascade = CascadeType.REMOVE )
+    private Set<User> users;
 
     @OneToMany(mappedBy = "group", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<UserGroupData> userGroupData;

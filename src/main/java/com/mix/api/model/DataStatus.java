@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "data_statuses")
@@ -25,7 +26,7 @@ public class DataStatus {
 
 //    RELATIONS
 
-    @ManyToMany
-    private List<Data> dataList;
+    @ManyToMany (cascade =  CascadeType.REMOVE)
+    private Set<Data> dataList;
 
 }

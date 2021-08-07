@@ -26,10 +26,10 @@ public class UserGroupRole{
     private User user;
 
     @JoinColumn(name = "group")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Group group;
 
-    @JoinColumn(name = "user_group_role_type")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "user_group_role_type", updatable = false, table = "group")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private UserGroupRoleType roleType;
 }

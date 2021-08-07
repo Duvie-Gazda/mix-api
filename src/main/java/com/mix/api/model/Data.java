@@ -26,11 +26,11 @@ public class Data {
 
 //    RELATIONS
 
-    @ManyToMany
-    private List<DataStatus> dataStatusList;
+    @ManyToMany (cascade = CascadeType.REMOVE)
+    private Set<DataStatus> dataStatusList;
 
-    @ManyToMany
-    private List<DataType> dataTypeList;
+    @ManyToMany (cascade =  CascadeType.REMOVE)
+    private Set<DataType> dataTypeList;
 
     @OneToMany(mappedBy = "data", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<UserGroupData> userGroupData;
