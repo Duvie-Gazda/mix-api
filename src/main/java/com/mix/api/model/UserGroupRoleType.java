@@ -16,10 +16,19 @@ import javax.persistence.*;
 public class UserGroupRoleType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true,updatable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @JoinColumn(name =  "user", updatable = false)
+    @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
 
+    private User user;
+
+    @JoinColumn(name = "group", updatable = false)
+    @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
+    private Group group;
+
+    @JoinColumn(name = "user_group_role",updatable = false)
+    @ManyToOne(cascade = CascadeType.REMOVE,optional = false)
+    private UserGroupRole role;
 }

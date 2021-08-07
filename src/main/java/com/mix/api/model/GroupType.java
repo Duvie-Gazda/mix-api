@@ -18,11 +18,11 @@ import java.util.Set;
 public class GroupType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id", nullable = false, unique = true, updatable = false)
     private Long id;
 
 //    RELATIONS
 
-    @ManyToMany (cascade = CascadeType.REMOVE )
+    @ManyToMany(targetEntity =  Group.class)
     private Set<Group> groups;
 }

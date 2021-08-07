@@ -17,7 +17,7 @@ import java.util.Set;
 public class UserData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true, updatable = false)
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -25,8 +25,8 @@ public class UserData {
 
 //    RELATIONS
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(table = "user", nullable = false, updatable = false)
+    @ManyToMany
+    @JoinColumn(name = "user", nullable = false, updatable = false)
     private Set<User> users;
 
 }

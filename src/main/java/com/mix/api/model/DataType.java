@@ -18,14 +18,14 @@ import java.util.Set;
 public class DataType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true, updatable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true, updatable = false)
     private String name;
 
 //    RELATIONS
 
-    @ManyToMany (cascade =  CascadeType.REMOVE)
+    @ManyToMany
     private Set<Data> dataList;
 }

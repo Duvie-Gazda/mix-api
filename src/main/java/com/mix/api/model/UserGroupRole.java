@@ -16,20 +16,20 @@ import javax.persistence.*;
 public class UserGroupRole{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id", nullable = false, unique = true, updatable = false)
     private Long id;
 
 //    CONNECTIONS
 
-    @JoinColumn(name = "user_id")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "user", updatable = false)
+    @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
     private User user;
 
-    @JoinColumn(name = "group_id")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "group", updatable = false)
+    @ManyToOne(cascade = CascadeType.REMOVE,optional = false)
     private Group group;
 
-    @JoinColumn(name = "user_group_role_type_id", updatable = false, table = "group")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_group_role_type", updatable = false)
+    @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
     private UserGroupRoleType roleType;
 }

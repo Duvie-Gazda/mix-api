@@ -16,21 +16,21 @@ import javax.persistence.*;
 public class UserGroupData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, updatable = false, unique = true)
     private Long id;
 
 //    CONNECTIONS
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "user")
+    @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
+    @JoinColumn(name = "user", updatable = false)
     private User user;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "group")
+    @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
+    @JoinColumn(name = "group", updatable = false)
     private Group group;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "data")
+    @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
+    @JoinColumn(name = "data", updatable = false)
     private Data data;
 
 }

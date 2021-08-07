@@ -18,20 +18,20 @@ import java.util.Set;
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id", nullable = false, unique = true,updatable = false)
     private Long id;
 
 //    RELATIONS
 
-    @ManyToMany (cascade = CascadeType.REMOVE)
+    @ManyToMany(targetEntity =  GroupType.class)
     private Set<GroupType> groupTypeList;
 
-    @ManyToMany (cascade = CascadeType.REMOVE )
+    @ManyToMany(targetEntity = User.class)
     private Set<User> users;
 
-    @OneToMany(mappedBy = "group", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "group")
     private Set<UserGroupData> userGroupData;
 
-    @OneToMany(mappedBy = "group", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "group")
     private Set<UserGroupRole> userGroupRoles;
 }

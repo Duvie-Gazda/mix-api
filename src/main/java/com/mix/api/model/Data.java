@@ -18,7 +18,7 @@ import java.util.Set;
 public class Data {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true,updatable = false)
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -26,13 +26,13 @@ public class Data {
 
 //    RELATIONS
 
-    @ManyToMany (cascade = CascadeType.REMOVE)
+    @ManyToMany
     private Set<DataStatus> dataStatusList;
 
-    @ManyToMany (cascade =  CascadeType.REMOVE)
+    @ManyToMany
     private Set<DataType> dataTypeList;
 
-    @OneToMany(mappedBy = "data", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "data", targetEntity = UserGroupData.class)
     private Set<UserGroupData> userGroupData;
 
 }

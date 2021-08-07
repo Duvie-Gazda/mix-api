@@ -19,10 +19,10 @@ import java.util.Set;
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "id", nullable = false, updatable = false, unique = true)
     private Long id;
 
-    @Column(name = "nick", nullable = false, unique = true,updatable = false, length = 500)
+    @Column(name = "nick", nullable = false, unique = true, length = 500)
     @NaturalId
     private String nick;
 
@@ -37,9 +37,9 @@ public class User implements Serializable {
     @ManyToMany
     private Set <UserRole> userRoleList;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "user")
     private Set<UserGroupData> userGroupData;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "user")
     private Set<UserGroupRole> userGroupRoles;
 }
