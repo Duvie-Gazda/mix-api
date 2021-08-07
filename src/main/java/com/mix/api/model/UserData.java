@@ -6,23 +6,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "group_types")
+@Table(name = "user_data")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class GroupType {
+@NoArgsConstructor
+public class UserData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id", nullable = false)
     private Long id;
+
+    @Column(name = "name", nullable = false)
+    private String name;
 
 //    RELATIONS
 
-    @ManyToMany (cascade = CascadeType.REMOVE )
-    private Set<Group> groups;
+    @ManyToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(table = "user", nullable = false, updatable = false)
+    private Set<User> users;
+
 }

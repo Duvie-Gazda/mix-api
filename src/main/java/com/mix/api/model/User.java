@@ -8,7 +8,6 @@ import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,15 +22,12 @@ public class User implements Serializable {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
-    @Column(name = "nick", nullable = false)
+    @Column(name = "nick", nullable = false, unique = true,updatable = false, length = 500)
     @NaturalId
     private String nick;
 
-    @Column(name = "pass", nullable = false)
+    @Column(name = "pass", nullable = false, length = 115)
     private String pass;
-
-    @Column(name = "email", nullable = false)
-    private String email;
 
 //    RELATIONS
 
@@ -41,7 +37,7 @@ public class User implements Serializable {
     @ManyToMany
     private Set <UserRole> userRoleList;
 
-    @OneToMany(mappedBy = "user_group_datas", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<UserGroupData> userGroupData;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})

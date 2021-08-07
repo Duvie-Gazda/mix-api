@@ -32,4 +32,5 @@ public class UserGroupData {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "data")
     private Data data;
+
 }
