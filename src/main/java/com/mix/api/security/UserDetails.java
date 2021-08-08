@@ -13,7 +13,7 @@ import java.util.Collection;
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
 
     private final Long id;
-    private final String email;
+    private final String nick;
     private final String password;
     private final Collection<? extends GrantedAuthority> grantedAuthorities;
 
@@ -27,7 +27,7 @@ public class UserDetails implements org.springframework.security.core.userdetail
 
         return new UserDetails(
                 user.getId(),
-                user.getEmail(),
+                user.getNick(),
                 user.getPass(),
                 grantedAuthorities);
     }
@@ -49,7 +49,7 @@ public class UserDetails implements org.springframework.security.core.userdetail
 
     @Override
     public String getUsername() {
-        return email;
+        return nick;
     }
 
     @Override
