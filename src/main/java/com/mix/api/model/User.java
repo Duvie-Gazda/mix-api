@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.List;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
@@ -15,32 +16,30 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, updatable = false, unique = true)
     private Long id;
 
-    @Column(name = "nick", nullable = false)
+    @Column(name = "nick", nullable = false, unique = true, length = 500)
+    @NaturalId
     private String nick;
 
-    @Column(name = "pass", nullable = false)
+    @Column(name = "pass", nullable = false, length = 115)
     private String pass;
-
-    @Column(name = "email", nullable = false)
-    private String email;
 
 //    RELATIONS
 
     @ManyToMany
-    private List<Group> groupList;
+    private Set<Group> groupList;
 
     @ManyToMany
-    private List<UserRole> userRoleList;
+    private Set <UserRole> userRoleList;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "user")
     private Set<UserGroupData> userGroupData;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "user")
     private Set<UserGroupRole> userGroupRoles;
 }
