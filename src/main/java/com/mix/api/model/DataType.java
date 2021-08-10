@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "data_types")
+@Table
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,10 +18,10 @@ import java.util.Set;
 public class DataType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true, updatable = false)
+    @Column( nullable = false, unique = true, updatable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true, updatable = false)
     private String name;
 
 //    RELATIONS

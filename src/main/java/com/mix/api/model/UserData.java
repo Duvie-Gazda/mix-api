@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "user_data")
+@Table
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,16 +17,16 @@ import java.util.Set;
 public class UserData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true, updatable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column( nullable = false)
     private String name;
 
 //    RELATIONS
 
     @ManyToMany
-    @JoinColumn(name = "user", nullable = false, updatable = false, referencedColumnName = "id")
+    @JoinColumn(name = "user", nullable = false, updatable = false)
     private Set<User> users;
 
 }

@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user_group_datas")
+@Table
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 public class UserGroupData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false, unique = true)
+    @Column( nullable = false, updatable = false, unique = true)
     private Long id;
 
-    @Column(name = "time", updatable = false, nullable = false)
+    @Column( updatable = false, nullable = false)
     private LocalDateTime time;
 
 //    CONNECTIONS

@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "datas")
+@Table
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,10 +17,10 @@ import java.util.Set;
 public class Data {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true,updatable = false)
+    @Column(nullable = false, unique = true,updatable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column( nullable = false)
     private String name;
 
 //    RELATIONS

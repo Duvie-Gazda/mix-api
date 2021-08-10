@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "`group`")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,7 +18,7 @@ import java.util.Set;
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true,updatable = false)
+    @Column(nullable = false, unique = true,updatable = false)
     private Long id;
 
 //    RELATIONS

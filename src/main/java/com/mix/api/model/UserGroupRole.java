@@ -8,7 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user_group_roles")
+@Table
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class UserGroupRole{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true, updatable = false)
+    @Column( nullable = false, unique = true, updatable = false)
     private Long id;
 
 //    CONNECTIONS

@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Entity
-@Table(name = "users" )
+@Table
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,7 +23,6 @@ public class User implements Serializable {
     private Long id;
 
     @Column( nullable = false, unique = true, length = 500)
-    @NaturalId
     private String nick;
 
     @Column( nullable = false, length = 115)

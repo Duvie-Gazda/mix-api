@@ -8,17 +8,17 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "user_data_type")
+@Table(name = "`user_data_type`")
 @Getter
 @Setter
 @NoArgsConstructor
 public class UserDataType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true, updatable = false)
+    @Column( nullable = false, unique = true, updatable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column( nullable = false, unique = true)
     private String name;
 
 //    RELATIONS
