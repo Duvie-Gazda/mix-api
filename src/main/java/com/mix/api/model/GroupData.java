@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table
@@ -15,17 +13,13 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupType {
+public class GroupData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column( nullable = false, unique = true, updatable = false)
+    @Column(nullable = false)
     private Long id;
 
-    @Column
+    @Column(unique = true, updatable = false)
     private String name;
 
-//    RELATIONS
-
-    @ManyToMany(targetEntity =  Group.class)
-    private Set<Group> groups;
 }

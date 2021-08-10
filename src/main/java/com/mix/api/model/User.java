@@ -34,7 +34,10 @@ public class User implements Serializable {
     private Set<Group> groupList;
 
     @ManyToMany
-    private Set <UserRole> userRoleList;
+    private Set <UserRole> userRoles;
+
+    @ManyToMany
+    private Set <UserData> userData;
 
     @OneToMany(mappedBy = "user")
     private Set<UserGroupData> userGroupData;

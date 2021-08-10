@@ -29,4 +29,7 @@ public class UserData {
     @JoinColumn(name = "user", nullable = false, updatable = false)
     private Set<User> users;
 
+    @ManyToMany
+    private Set<UserDataType> userDataTypes;
+
 }
