@@ -19,14 +19,14 @@ import java.util.Set;
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false, unique = true)
+    @Column( nullable = false, updatable = false, unique = true)
     private Long id;
 
-    @Column(name = "nick", nullable = false, unique = true, length = 500)
+    @Column( nullable = false, unique = true, length = 500)
     @NaturalId
     private String nick;
 
-    @Column(name = "pass", nullable = false, length = 115)
+    @Column( nullable = false, length = 115)
     private String pass;
 
 //    RELATIONS

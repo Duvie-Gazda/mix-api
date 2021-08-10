@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,7 +31,7 @@ public class Data {
     @ManyToMany
     private Set<DataType> dataTypeList;
 
-    @OneToMany(mappedBy = "data", targetEntity = UserGroupData.class)
+    @OneToMany(mappedBy = "data")
     private Set<UserGroupData> userGroupData;
 
 }

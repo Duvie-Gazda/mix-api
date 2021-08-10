@@ -21,15 +21,15 @@ public class UserGroupRole{
 
 //    CONNECTIONS
 
-    @JoinColumn(name = "user", updatable = false)
+    @JoinColumn(updatable = false)
     @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
     private User user;
 
-    @JoinColumn(name = "group", updatable = false)
+    @JoinColumn(updatable = false)
     @ManyToOne(cascade = CascadeType.REMOVE,optional = false)
     private Group group;
 
-    @JoinColumn(name = "user_group_role_type", updatable = false)
+    @JoinColumn(updatable = false)
     @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
     private UserGroupRoleType roleType;
 }
