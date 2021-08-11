@@ -53,8 +53,7 @@ public class UserService {
     }
 
     public HttpStatus deleteUsersByIdArray (List<Long> idList){
-        for (Long id:
-             idList) {
+        for (Long id: idList) {
             try{
                 userRepository.delete(userRepository.findUserById(id));
             }catch (Throwable throwable){
@@ -86,23 +85,65 @@ public class UserService {
         return HttpStatus.OK;
     }
 
-//
+//    SET
+
+    public HttpStatus setRoleToUserByRoleId(User user, Long roleId){
+        try {
+            user.getUserRoles().add(userRoleRepository.findUserRoleById(roleId));
+            userRepository.save(user);
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus setRoleToUserByRoleId(User user, String roleName){
+        try{
+            user.getUserRoles().add(userRoleRepository.findUserRoleByName(roleName));
+            userRepository.save(user);
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+//    Change
+
+    public HttpStatus changeUsersRoleToAnotherByNames(User user, String roleNameToDelete, String roleNameToAdd){
+        try {
+            user.getUserRoles().remove(userRoleRepository.findUserRoleByName(roleNameToDelete));
+            user.getUserRoles().add(userRoleRepository.findUserRoleByName(roleNameToAdd));
+            userRepository.save(user);
+        }catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus changeUsersRoleToAnotherByIds(User user,Long roleIdToDelete, Long roleIdToAdd){
+        try{
+            user.getUserRoles().remove(userRoleRepository.findUserRoleById(roleIdToDelete));
+            user.getUserRoles().add(userRoleRepository.findUserRoleById(roleIdToAdd));
+            userRepository.save(user);
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
 
 //    GET User By
 
     public Set<User> getUsersByRoleName(String roleName){
-        UserRole userRole = userRoleRepository.findUserRoleByName(roleName);
-        return userRole.getUsers();
+        return userRoleRepository.findUserRoleByName(roleName).getUsers();
     }
 
     public Set<User> getUsersByRoleId(Long roleId){
-        UserRole userRole = userRoleRepository.findUserRoleById(roleId);
-        return userRole.getUsers();
+        return userRoleRepository.findUserRoleById(roleId).getUsers();
     }
 
     public Set<User> getUsersByUserDataName(String userDataName){
-        UserData userData = userDataRepository.findUserDataByName(userDataName);
-        return userData.getUsers();
+        return userDataRepository.findUserDataByName(userDataName).getUsers();
     }
 
     public User getUserByNick(String nick){
