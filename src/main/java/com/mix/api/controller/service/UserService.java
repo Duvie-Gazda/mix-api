@@ -97,7 +97,7 @@ public class UserService {
         return HttpStatus.OK;
     }
 
-    public HttpStatus setRoleToUserByRoleId(User user, String roleName){
+    public HttpStatus setRoleToUserByRoleName(User user, String roleName){
         try{
             user.getUserRoles().add(userRoleRepository.findUserRoleByName(roleName));
             userRepository.save(user);
