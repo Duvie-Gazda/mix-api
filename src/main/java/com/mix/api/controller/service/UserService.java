@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
    import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -22,11 +23,13 @@ public class UserService {
     @Autowired
     private UserDataTypeRepository userDataTypeRepository;
 
+//    User CRUD
+
     public HttpStatus createUser (User user){
         try{
             userRepository.save(user);
         }catch (Throwable throwable){
-            return HttpStatus.BAD_REQUEST;
+            return HttpStatus.BAD_GATEWAY;
         }
         return HttpStatus.OK;
     }
@@ -35,7 +38,7 @@ public class UserService {
         try{
             userRepository.delete(user);
         }catch (Throwable throwable){
-            return HttpStatus.BAD_REQUEST;
+            return HttpStatus.BAD_GATEWAY;
         }
         return HttpStatus.OK;
     }
@@ -44,7 +47,19 @@ public class UserService {
         try{
             userRepository.save(user);
         }catch (Throwable throwable){
-            return HttpStatus.BAD_REQUEST;
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus deleteUsersByIdArray (List<Long> idList){
+        for (Long id:
+             idList) {
+            try{
+                userRepository.delete(userRepository.findUserById(id));
+            }catch (Throwable throwable){
+                return  HttpStatus.BAD_GATEWAY;
+            }
         }
         return HttpStatus.OK;
     }
@@ -71,17 +86,7 @@ public class UserService {
         return HttpStatus.OK;
     }
 
-//    Get From User
-
-    public Set<UserData> getUserDataByDataTypeId(User user, Long dataTypeId){
-        Set<UserDataType> user_data_types = userDataTypeRepository.findUserDataTypesById(dataTypeId);
-        return userDataRepository.findUserDataByUserDataTypesAndUsers(user_data_types, (Set<User>) user);
-    }
-
-    public Set<UserData> getUserDataByDataTypeName(User user, String dataTypeName){
-        Set<UserDataType> user_data_types = userDataTypeRepository.findUserDataTypesByName(dataTypeName);
-        return userDataRepository.findUserDataByUserDataTypesAndUsers(user_data_types, (Set<User>) user);
-    }
+//
 
 //    GET User By
 
@@ -90,12 +95,12 @@ public class UserService {
         return userRole.getUsers();
     }
 
-    public Set<User> getUserByRoleId(Long roleId){
+    public Set<User> getUsersByRoleId(Long roleId){
         UserRole userRole = userRoleRepository.findUserRoleById(roleId);
         return userRole.getUsers();
     }
 
-    public Set<User> getUserByUserDataName(String userDataName){
+    public Set<User> getUsersByUserDataName(String userDataName){
         UserData userData = userDataRepository.findUserDataByName(userDataName);
         return userData.getUsers();
     }
