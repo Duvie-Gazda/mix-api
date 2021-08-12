@@ -25,12 +25,6 @@ public class Data {
 
 //    RELATIONS
 
-    @ManyToMany
-    private Set<DataStatus> dataStatusList;
-
-    @ManyToMany
-    private Set<DataType> dataTypeList;
-
     @OneToMany(mappedBy = "data")
     private Set<UserGroupData> userGroupData;
 

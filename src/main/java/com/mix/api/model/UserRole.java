@@ -6,15 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +21,19 @@ public class UserRole {
     @Column(nullable = false, unique = true, updatable = false)
     private String name;
 
-//    RELATIONS
+    public UserRole(String name) {
+        this.name = name;
+    }
+
+    public UserRole() {}
+
+    //    RELATIONS
 
     @ManyToMany
+    @JoinTable(
+            name = "user_user_role",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "role_id")}
+    )
     private Set<User> users;
 }

@@ -1,5 +1,6 @@
 package com.mix.api.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserDataType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +25,7 @@ public class UserDataType {
 
 //    RELATIONS
 
-    @ManyToMany
-    private Set<UserData> userDataSet;
+    @OneToMany(mappedBy = "dataType")
+    private Set<UserDataDataType> dataTypes;
 
 }

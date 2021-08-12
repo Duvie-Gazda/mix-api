@@ -25,5 +25,5 @@ public class UserGroupRoleType {
 
     @JoinColumn(updatable = false, referencedColumnName = "id")
     @ManyToMany(cascade = CascadeType.REMOVE)
-    private Set<UserGroupRole> role_id;
+    private Set<UserGroupRole> role;
 }

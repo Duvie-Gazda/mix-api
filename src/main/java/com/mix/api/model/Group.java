@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,15 +22,18 @@ public class Group {
 
 //    RELATIONS
 
-    @ManyToMany(targetEntity =  GroupType.class)
-    private Set<GroupType> groupTypeList;
-
-    @ManyToMany(targetEntity = User.class)
-    private Set<User> users;
-
     @OneToMany(mappedBy = "group")
     private Set<UserGroupData> userGroupData;
 
     @OneToMany(mappedBy = "group")
     private Set<UserGroupRole> userGroupRoles;
+
+    @ManyToMany
+    @JoinTable(
+            name = "group_group_type",
+            joinColumns = {@JoinColumn (name = "group_type_id")},
+            inverseJoinColumns = { @JoinColumn (name = "group_id")}
+    )
+    private Set<GroupType> groupType;
+
 }

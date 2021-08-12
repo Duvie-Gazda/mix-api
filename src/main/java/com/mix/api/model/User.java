@@ -1,5 +1,6 @@
 package com.mix.api.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,17 +32,26 @@ public class User implements Serializable {
 //    RELATIONS
 
     @ManyToMany
-    private Set<Group> groupList;
-
-    @ManyToMany
+    @JoinTable(
+            name = "user_user_role",
+            inverseJoinColumns = { @JoinColumn(name = "user_id") },
+            joinColumns = { @JoinColumn(name = "role_id")}
+    )
+    @JsonBackReference
     private Set <UserRole> userRoles;
 
-    @ManyToMany
-    private Set <UserData> userData;
 
     @OneToMany(mappedBy = "user")
+    @JsonBackReference
+    private Set<UserDataDataType> userDataDataTypes;
+
+    @OneToMany(mappedBy = "user")
+    @JsonBackReference
     private Set<UserGroupData> userGroupData;
 
     @OneToMany(mappedBy = "user")
+    @JsonBackReference
     private Set<UserGroupRole> userGroupRoles;
+
+
 }

@@ -24,9 +24,4 @@ public class DataStatus {
     @Column( nullable = false, unique = true, updatable = false)
     private String name;
 
-//    RELATIONS
-
-    @ManyToMany
-    private Set<Data> dataList;
-
 }

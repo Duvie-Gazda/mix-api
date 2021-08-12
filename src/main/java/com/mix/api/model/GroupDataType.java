@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table
@@ -19,6 +20,9 @@ public class GroupDataType {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column
+    @Column(nullable = false, updatable = false, unique = true)
     private String name;
+
+//    RELATIONS
+
 }

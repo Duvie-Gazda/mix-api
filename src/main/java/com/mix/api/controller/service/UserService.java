@@ -6,9 +6,46 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
    import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/*
+ *   ---- USER -----
+ *  # create USER
+ *  # delete USER
+ *  # update USER
+ *  # delete USERS by ID array
+ *  get All USERS
+ *  # get USERS by USER_ROLE
+ *  # get USERS by USER_DATA
+ *  # get USER by USER_DATA_TYPE
+ *  # get USER by nick
+ *  # get USER by id
+ *
+ *
+ *   ----- USER ROLE -----
+ *  # get USER_ROLE by (name, id)
+ *  # create USER_ROLE
+ *  # delete USER_ROLE
+ *  # update USER_ROLE
+ *  # add USER_ROLE to USER
+ *  # delete USER_ROLE from USER
+ *  # get USER_ROLES by USER
+ *  # get USER_ROLES by USERS
+ * get all USER_ROLES
+ *
+ *   ----- USER DATA -----
+ *  # get USER_DATA by (name,id)
+ *  # create USER_DATA
+ *  # delete USER_DATA
+ *  # update USER_DATA
+ *  # add USER_DATA to USER
+ *  # delete USER_DATA from USER
+ *  # get USER_DATA by USER_DATA_TYPE
+ *
+ *
+ * */
 @Component
 public class UserService {
     @Autowired
@@ -18,12 +55,16 @@ public class UserService {
     private UserRoleRepository userRoleRepository;
 
     @Autowired
+    private UserDataDataTypeRepository dataDataTypeRepository;
+
+    @Autowired
     private UserDataRepository userDataRepository;
 
     @Autowired
     private UserDataTypeRepository userDataTypeRepository;
 
-//    User CRUD
+
+//    USER
 
     public HttpStatus createUser (User user){
         try{
@@ -63,87 +104,26 @@ public class UserService {
         return HttpStatus.OK;
     }
 
-//    Delete From User
+    public Set<User> getAllUsers(){ return userRepository.findAll();}
 
-    public HttpStatus deleteUserRoleByRoleId(User user, Long role_id){
-        try{
-            user.getUserRoles().remove(userRoleRepository.findUserRoleById(role_id));
-            userRepository.save(user);
-        }catch (Throwable throwable){
-            return HttpStatus.BAD_REQUEST;
+    public Set<User> getUsersByUserRole(UserRole userRole){ return userRepository.findByUserRoles_Id(userRole.getId());}
+
+    public Set<User> getUsersByUserData(UserData userData){
+        Set<User> users = new HashSet<User>();
+        Set<UserDataDataType> dataDataTypes = dataDataTypeRepository.findUserDataDataTypesByData(userDataRepository.findUserDataById(userData.getId()));
+        for (UserDataDataType dataDataType: dataDataTypes) {
+            users.add(dataDataType.getUser());
         }
-        return HttpStatus.OK;
+        return users;
     }
 
-    public HttpStatus deleteUserRoleByRoleName(User user, String role_name){
-        try{
-            user.getUserRoles().remove(userRoleRepository.findUserRoleByName(role_name));
-            userRepository.save(user);
-        }catch (Throwable throwable){
-            return HttpStatus.BAD_REQUEST;
+    public Set<User> getUsersByUserDataType(UserDataType dataType){
+        Set<User> users = new HashSet<>();
+        Set<UserDataDataType> dataDataTypes = dataDataTypeRepository.findUserDataDataTypesByDataType(userDataTypeRepository.findUserDataTypeById(dataType.getId()));
+        for (UserDataDataType dataDataType: dataDataTypes) {
+            users.add(dataDataType.getUser());
         }
-        return HttpStatus.OK;
-    }
-
-//    SET
-
-    public HttpStatus setRoleToUserByRoleId(User user, Long roleId){
-        try {
-            user.getUserRoles().add(userRoleRepository.findUserRoleById(roleId));
-            userRepository.save(user);
-        } catch (Throwable throwable){
-            return HttpStatus.BAD_GATEWAY;
-        }
-        return HttpStatus.OK;
-    }
-
-    public HttpStatus setRoleToUserByRoleName(User user, String roleName){
-        try{
-            user.getUserRoles().add(userRoleRepository.findUserRoleByName(roleName));
-            userRepository.save(user);
-        } catch (Throwable throwable){
-            return HttpStatus.BAD_GATEWAY;
-        }
-        return HttpStatus.OK;
-    }
-
-//    Change
-
-    public HttpStatus changeUsersRoleToAnotherByNames(User user, String roleNameToDelete, String roleNameToAdd){
-        try {
-            user.getUserRoles().remove(userRoleRepository.findUserRoleByName(roleNameToDelete));
-            user.getUserRoles().add(userRoleRepository.findUserRoleByName(roleNameToAdd));
-            userRepository.save(user);
-        }catch (Throwable throwable){
-            return HttpStatus.BAD_GATEWAY;
-        }
-        return HttpStatus.OK;
-    }
-
-    public HttpStatus changeUsersRoleToAnotherByIds(User user,Long roleIdToDelete, Long roleIdToAdd){
-        try{
-            user.getUserRoles().remove(userRoleRepository.findUserRoleById(roleIdToDelete));
-            user.getUserRoles().add(userRoleRepository.findUserRoleById(roleIdToAdd));
-            userRepository.save(user);
-        } catch (Throwable throwable){
-            return HttpStatus.BAD_GATEWAY;
-        }
-        return HttpStatus.OK;
-    }
-
-
-//    GET User By
-
-    public Set<User> getUsersByRoleName(String roleName){
-        return userRoleRepository.findUserRoleByName(roleName).getUsers();
-    }
-
-    public Set<User> getUsersByRoleId(Long roleId){
-        return userRoleRepository.findUserRoleById(roleId).getUsers();
-    }
-
-    public Set<User> getUsersByUserDataName(String userDataName){
-        return userDataRepository.findUserDataByName(userDataName).getUsers();
+        return users;
     }
 
     public User getUserByNick(String nick){
@@ -153,4 +133,128 @@ public class UserService {
     public User getUserById (Long id){
         return userRepository.findUserById(id);
     }
+
+
+//    USER ROLE
+
+    public UserRole getUserRoleByName (String name){ return  userRoleRepository.findUserRoleByName(name);}
+
+    public UserRole getUserRoleById (Long id){ return userRoleRepository.findUserRoleById(id);}
+
+    public HttpStatus createUserRole(String roleName){
+        try {
+            UserRole userRole = new UserRole(roleName);
+            userRoleRepository.save(userRole);
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+
+    public HttpStatus deleteUserRole(UserRole userRole){
+        try {
+            userRoleRepository.delete(userRole);
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus addUserRoleToUser(UserRole userRole, User user){
+        try {
+            user.getUserRoles().add(userRole);
+            userRepository.save(user);
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus deleteUserRoleFromUser(UserRole userRole, User user){
+        try {
+            user.getUserRoles().remove(userRole);
+            userRepository.save(user);
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public Set<UserRole> getUserRoleByUser(User user){ return user.getUserRoles();}
+
+    public Set<UserRole> getUserRoleByUsers(Set<User> users){
+        Set<UserRole> userRoles = new HashSet<UserRole>();
+        for (User user: users) {
+            userRoles.addAll(user.getUserRoles());
+        }
+        return userRoles;
+    }
+
+    public List<UserRole> getAllUserRoles(){ return userRoleRepository.findAll();}
+
+
+
+//    USER DATA
+
+    public UserData getUserDataByName(String name) {return userDataRepository.findUserDataByName(name);}
+
+    public UserData getUserDataById(Long id) {return  userDataRepository.findUserDataById(id);}
+
+    public HttpStatus createUserData(String dataName){
+        try{
+            UserData userData = new UserData(dataName);
+            userDataRepository.save(userData);
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus updateUserData(UserData userData){
+        try {
+            userDataRepository.save(userData);
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus deleteUserData(UserData userData){
+        try {
+            userDataRepository.delete(userData);
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus addUserDataToUser(User user, UserData data, UserDataType dataType){
+        try {
+            UserDataDataType userDataDataType = new UserDataDataType(user,data,dataType);
+            dataDataTypeRepository.save(userDataDataType);
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus deleteUserDataFromUser(User user, UserData data, UserDataType dataType){
+        try {
+            dataDataTypeRepository.delete(dataDataTypeRepository.findUserDataDataTypeByUserAndDataAndDataType(user,data,dataType));
+        } catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public Set<UserData> getUserDataByUserDataType (UserDataType userDataType){
+        Set<UserData> userData = new HashSet<>();
+        Set<UserDataDataType> dataDataTypes = dataDataTypeRepository.findUserDataDataTypesByDataType(userDataTypeRepository.findUserDataTypeById(userDataType.getId()));
+        for (UserDataDataType dataDataType: dataDataTypes) {
+            userData.add(dataDataType.getData());
+        }
+        return userData;
+    }
+
 }

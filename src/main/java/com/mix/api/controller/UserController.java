@@ -2,6 +2,7 @@ package com.mix.api.controller;
 
 import com.mix.api.controller.service.UserService;
 import com.mix.api.model.User;
+import com.mix.api.model.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,98 +11,122 @@ import java.util.List;
 import java.util.Set;
 
 
+/*
+*                      ---- USER ----
+*  # create USER                              (/users/new, post)
+*  # delete USER by id                        (/users/{id}, delete)
+*  # update USER                              (/users, put)
+*  # get all USERS                            (/users, get)
+*  # get USER by nick                         (/users/nick/{nick}, get)
+*  # get USER by id                           (/users/{id}, get)
+*  # get USERS by USER_ROLE id                (/users/by-roles/{id}, get)
+*  # get USERS by USER_ROLE name              (/users/by-roles/name/{name}, get)
+*  get USERS by USER_DATA id                (/users/by-data/{id}, get)
+*  get USERS by USER_DATA name              (/users/by-data/name/{name}, get)
+*   == Not full ==
+*  get USER (nick) by USER_ROLE id          (/users/params/nick/by-roles/{id}, get)
+*  get USER (nick) by USER_ROLE name        (/users/params/nick/by-roles/{name}, get)
+*  get USERS (nick) by USER_DATA id         (/users/params/nick/by-data/{id}, get)
+*  get USERS (nick) by USER_DATA name       (/users/params/nick/by-data/name/{name}, get)
+*  get USER (nick) by id                    (/users/params/nick/{id}, get)
+*
+*                     ---- USER ROLE ----
+*  # create USER_ROLE                     (/users/roles/new/{name}, put)
+*  # delete USER_ROLE                     (/users/roles/{id}, delete)
+*  # get all USER_ROLES                   (/users/roles, get)
+*  # get USER_ROLE by id                  (/users/roles/{id}, get)
+*  # get USER_ROLE by name                (/users/roles/name/{name}, get)
+*  get USER_ROLES by USER id            (/users/{id}/roles, get)
+*  get USER_ROLES by USER nick          (/users/nick/{nick}/roles, get)
+*  get USER_ROLES by USERS id array     (/users/roles, post)
+*  delete USER_ROLE from USER by id's   (/users/{user_id}/roles/{role_id}, delete)
+*  add USER_ROLE to USER                (/users/{user_id}/roles/{role_id}, get)
+*
+*
+* ---- PRIVATE ----
+*  convert USER to UserNickDTO
+* */
 @RestController
 public class UserController {
     @Autowired
     private UserService userService;
 
-//    GET
+//    USER
+
+    @PostMapping(path = "/users/new")
+    public ResponseEntity<?> createUser (@RequestBody User user){
+        return new ResponseEntity<>(userService.createUser(user));
+    }
+
+    @DeleteMapping(path = "/users/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id){
+        return new ResponseEntity<>(userService.deleteUser(userService.getUserById(id)));
+    }
+
+    @PutMapping(path = "/users")
+    public ResponseEntity<?> updateUser (@RequestBody User user){
+        return new ResponseEntity<>(userService.updateUser(user));
+    }
+
+    @GetMapping(path = "/users")
+    public Set<User> getAllUsers (){
+        return userService.getAllUsers();
+    }
+
+    @GetMapping(path = "/users/nick/{nick}")
+    public User getUserByNick(@PathVariable String nick){
+        return userService.getUserByNick(nick);
+    }
 
     @GetMapping(path = "/users/{id}")
     public User getUserById(@PathVariable Long id){
         return userService.getUserById(id);
     }
 
-    @GetMapping(path = "/users/{nick}")
-    public User getUserByNicName(@PathVariable String nick){
-        return userService.getUserByNick(nick);
+    @GetMapping(path = "/users/by-roles/{id}")
+    public Set<User> getUserByRoleId(@PathVariable Long id){
+        return userService.getUsersByUserRole(userService.getUserRoleById(id));
     }
 
-    @GetMapping(path = "/users/{userDataName}")
-    public Set<User> getUsersByUserDataName(@PathVariable String userDataName){
-        return userService.getUsersByUserDataName(userDataName);
+    @GetMapping(path = "/users/by-roles/name/{name}")
+    public Set<User> getUserByRoleName(@PathVariable String name){
+        return userService.getUsersByUserRole(userService.getUserRoleByName(name));
     }
 
-    @GetMapping(path = "/users/{userRoleId}")
-    public Set<User> getUserByUserRoleId(@PathVariable Long userRoleId){
-        return userService.getUsersByRoleId(userRoleId);
+//    Not full
+
+//    USER ROLE
+
+    @GetMapping(path = "/users/roles/new/{name}")
+    public ResponseEntity<?> createUserRole(@PathVariable String name){
+        return  new ResponseEntity<>(userService.createUserRole(name));
     }
 
-    @GetMapping(path = "/users/{userRoleName}")
-    public Set<User> getUserByUserRoleName(@PathVariable String userRoleName){
-        return userService.getUsersByRoleName(userRoleName);
-    }
-
-//    PUT
-
-    @PutMapping(path = "/users/{user_id}/roles/{id}")
-    public ResponseEntity<?> setRoleToUserByRoleId(@PathVariable Long id, @PathVariable Long user_id){
-        return new ResponseEntity<>(userService.setRoleToUserByRoleId(userService.getUserById(user_id), id));
-    }
-
-    @PutMapping(path = "/users/{user_id}/roles/{name}")
-    public ResponseEntity<?> setRoleToUserByRoleName(@PathVariable Long user_id, @PathVariable String name){
-        return new ResponseEntity<>(userService.setRoleToUserByRoleName(userService.getUserById(user_id), name));
-    }
-
-    @PutMapping(path = "users/{user_id}/roles/{idToDelete}/{idToAdd}")
-    public ResponseEntity<?> changeRoleToAnotherByIds(@PathVariable Long idToDelete, @PathVariable Long idToAdd, @PathVariable Long user_id){
-        return new ResponseEntity<>(userService.changeUsersRoleToAnotherByIds(userService.getUserById(user_id),idToDelete, idToAdd));
-    }
-
-    @PutMapping(path = "users/{user_id}/roles/{nameToDelete}/{nameToAdd}")
-    public ResponseEntity<?> changeRoleToAnotherByNames(@PathVariable Long user_id, @PathVariable String nameToAdd, @PathVariable String nameToDelete){
-        return new ResponseEntity<>(userService.changeUsersRoleToAnotherByNames(userService.getUserById(user_id),nameToDelete, nameToAdd));
+    @DeleteMapping(path = "/users/roles/{id}")
+    public ResponseEntity<?> deleteUserRoleById(@PathVariable Long id){
+        return new ResponseEntity<>(userService.deleteUserRole(userService.getUserRoleById(id)));
     }
 
 
-//    POST
-
-    @PostMapping(path = "/users/update")
-    public ResponseEntity<?> updateUser(@RequestBody User user){
-        return new ResponseEntity<>(userService.updateUser(user));
+    @GetMapping(path = "/users/roles")
+    public List<UserRole> getAllUserRoles (){
+        return userService.getAllUserRoles();
     }
 
-    @PostMapping(path = "/users")
-    public ResponseEntity<?> createUser(@RequestBody User user){
-        return new ResponseEntity<>(userService.createUser(user));
+
+    @GetMapping(path = "/users/roles/{id}")
+    public UserRole getUserRoleById(@PathVariable Long id){
+        return userService.getUserRoleById(id);
     }
 
-//    DELETE
-
-    @DeleteMapping(path = "/users/{id}")
-    public ResponseEntity<?> deleteUserById(@PathVariable Long id){
-        return new ResponseEntity<>(userService.deleteUser(userService.getUserById(id)));
+    @GetMapping(path = "/users/roles/name/{name}")
+    public UserRole getUserRoleByName(@PathVariable String name){
+        return userService.getUserRoleByName(name);
     }
 
-    @DeleteMapping(path = "/users/{nick}")
-    public ResponseEntity<?> deleteUserByNick(@PathVariable String nick){
-        return new ResponseEntity<>(userService.deleteUser(userService.getUserByNick(nick)));
-    }
-
-    @DeleteMapping(path = "/users")
-    public ResponseEntity<?> deleteUsersByIdArray(@RequestBody List<Long> idArray){
-        return new ResponseEntity<>(userService.deleteUsersByIdArray(idArray));
-    }
-
-    @DeleteMapping(path = "/users/{user_id}/roles/{role_id}")
-    public ResponseEntity<?> deleteRoleByRoleId(@PathVariable Long role_id, @PathVariable Long user_id){
-        return new ResponseEntity<>(userService.deleteUserRoleByRoleId(userService.getUserById(user_id), role_id));
-    }
-
-    @DeleteMapping(path = "/users/{user_id}/roles/{role_name}")
-    public ResponseEntity<?> deleteRoleByRoleName(@PathVariable String role_name, @PathVariable Long user_id){
-        return new ResponseEntity<>(userService.deleteUserRoleByRoleName(userService.getUserById(user_id), role_name));
+    @GetMapping(path = "/users/{user_id}/roles/{role_id}")
+    public ResponseEntity<?> addUserRoleToUser(@PathVariable Long role_id, @PathVariable Long user_id){
+        return new ResponseEntity<>(userService.addUserRoleToUser(userService.getUserRoleById(role_id),userService.getUserById(user_id)));
     }
 
 }

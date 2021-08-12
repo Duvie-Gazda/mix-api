@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table
@@ -14,20 +13,13 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserGroupData {
+public class GroupDataDataType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column( nullable = false, updatable = false, unique = true)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column( updatable = false, nullable = false)
-    private LocalDateTime time;
-
-//    CONNECTIONS
-
-    @ManyToOne( optional = false)
-    @JoinColumn(updatable = false)
-    private User user;
+//    RELATIONS
 
     @ManyToOne(optional = false)
     @JoinColumn(updatable = false)
@@ -35,16 +27,9 @@ public class UserGroupData {
 
     @ManyToOne(optional = false)
     @JoinColumn(updatable = false)
-    private Data data;
-
+    private GroupData data;
 
     @ManyToOne(optional = false)
     @JoinColumn(updatable = false)
-    private DataType dataType;
-
-    @JoinColumn ( updatable = false)
-    @ManyToOne
-    private DataStatus status;
-
-
+    private GroupDataType type;
 }
