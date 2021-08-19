@@ -7,14 +7,11 @@ import com.mix.api.model.*;
 import com.mix.api.security.JwtProvider;
 import com.mix.api.security.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.query.JpaQueryCreator;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,45 +20,45 @@ import java.util.Set;
 /*
 *                      ---- USER ----
 *
-*  # create USER                              (/users/new, put)
-*  # auth                                     (/users/auth, post)
-*  # delete USER by id                        (/users/{id}, delete)
-*  # update USER                              (/users, put)
-*  # get all USERS                            (/users, get)
-*  # get USER by nick                         (/users/nick/{nick}, get)
-*  # get USER by id                           (/users/{id}, get)
-*  # get USERS by USER_ROLE id                (/users/by-roles/{id}, get)
-*  # get USERS by USER_ROLE name              (/users/by-roles/name/{name}, get)
-*  # get USERS by USER_DATA id                (/users/by-data/{id}, get)
-*  # get USERS by USER_DATA name              (/users/by-data/name/{name}, get)
-*  # delete USERS by USERS id Array           (/users, delete)
-*  # get USER'S GROUPS                        (/users/{id}/groups, get)
+*  # create USER                              (/users/new, put) // all
+*  # auth                                     (/users/auth, post) // all
+*  # delete USER by id                        (/users/{id}, delete) // user and admin
+*  # update USER                              (/users, put) // user and admin
+*  # get all USERS                            (/users, get) // admin
+*  # get USER by nick                         (/users/nick/{nick}, get) // auth
+*  # get USER by id                           (/users/{id}, get) // auth
+*  # get USERS by USER_ROLE id                (/users/by-roles/{id}, get) // auth
+*  # get USERS by USER_ROLE name              (/users/by-roles/name/{name}, get) // auth
+*  # get USERS by USER_DATA id                (/users/by-data/{id}, get) // auth
+*  # get USERS by USER_DATA name              (/users/by-data/name/{name}, get) // auth
+*  # delete USERS by USERS id Array           (/users, delete) // auth
+*  # get USER'S GROUPS                        (/users/{id}/groups, get) // user and admin
 *   == Not full ==
-*  # get USER (nick) by USER_ROLE id          (/users/params/nick/by-roles/{id}, get)
-*  # get USER (nick) by USER_ROLE name        (/users/params/nick/by-roles/{name}, get)
-*  # get USERS (nick) by USER_DATA id         (/users/params/nick/by-data/{id}, get)
-*  # get USERS (nick) by USER_DATA name       (/users/params/nick/by-data/name/{name}, get)
-*  # get USER (nick) by id                    (/users/params/nick/{id}, get)
+*  # get USER (nick) by USER_ROLE id          (/users/params/nick/by-roles/{id}, get) // auth
+*  # get USER (nick) by USER_ROLE name        (/users/params/nick/by-roles/{name}, get) // auth
+*  # get USERS (nick) by USER_DATA id         (/users/params/nick/by-data/{id}, get) // auth
+*  # get USERS (nick) by USER_DATA name       (/users/params/nick/by-data/name/{name}, get) // auth
+*  # get USER (nick) by id                    (/users/params/nick/{id}, get) // auth
 *
 *                     ---- USER ROLE ----
 *
-*  # create USER_ROLE                     (/users/roles/new/{name}, put)
-*  # delete USER_ROLE by id               (/users/roles/{id}, delete)
-*  # get all USER_ROLES                   (/users/roles, get)
-*  # get USER_ROLE by id                  (/users/roles/{id}, get)
-*  # get USER_ROLE by name                (/users/roles/name/{name}, get)
-*  # get USER_ROLES by USER id            (/users/{id}/roles, get)
-*  # get USER_ROLES by USER nick          (/users/nick/{nick}/roles, get)
-*  # get USER_ROLES by USERS id array     (/users/roles, post)
-*  # delete USER_ROLE from USER by id's   (/users/{user_id}/roles/{role_id}, delete)
-*  # add USER_ROLE to USER                (/users/{user_id}/roles/{role_id}, put)
+*  # create USER_ROLE                     (/users/roles/new/{name}, put) // admin
+*  # delete USER_ROLE by id               (/users/roles/{id}, delete) // admin
+*  # get all USER_ROLES                   (/users/roles, get) // admin
+*  # get USER_ROLE by id                  (/users/roles/{id}, get) // admin
+*  # get USER_ROLE by name                (/users/roles/name/{name}, get) // admin
+*  # get USER_ROLES by USER id            (/users/{id}/roles, get) // admin
+*  # get USER_ROLES by USER nick          (/users/nick/{nick}/roles, get) // admin
+*  # get USER_ROLES by USERS id array     (/users/roles, post) // admin
+*  # delete USER_ROLE from USER by id's   (/users/{user_id}/roles/{role_id}, delete) // admin
+*  # add USER_ROLE to USER                (/users/{user_id}/roles/{role_id}, put) // admin
 *
 *                   ----- USER DATA ----
 *
-*  # create USER_DATA                      (/users/data/new, put)
-*  # create USER_DATA by name              (/users/data/new/{name}, put)
-*  # delete USER_DATA                      (/users/data/{id}, delete)
-*  # update USER_DATA                      (/users/data, put)
+*  # create USER_DATA                      (/users/data/new, put) // user and admin
+*  # create USER_DATA by name              (/users/data/new/{name}, put) // user and admin
+*  # delete USER_DATA                      (/users/data/{id}, delete) // user and admin
+*  # update USER_DATA                      (/users/data, put) // user and admin
 *  # get USER_DATA by id                   (/users/data/{id}, get)
 *  # get USER_DATA by name                 (/users/data/name/{name}, get)
 *  # get all USER_DATA by USER id          (/users/{id}/data, get)
@@ -98,10 +95,7 @@ public class UserController {
 
     @PutMapping(path = "/users/new")
     public void createUser (@RequestBody User user){
-//        if(hasPermissions(SecurityContextHolder.getContext(), user)){
-
             userService.createUser(user);
-//        }
     }
 
     @PostMapping(path = "/users/auth")
@@ -123,12 +117,17 @@ public class UserController {
 
     @PutMapping(path = "/users")
     public void updateUser (@RequestBody User user){
-        userService.updateUser(user);
+        if(hasPermissions(SecurityContextHolder.getContext(), user)){
+            userService.updateUser(user);
+        }
     }
 
     @GetMapping(path = "/users")
     public Set<User> getAllUsers (){
-        return userService.getAllUsers();
+        if(isAdmin(SecurityContextHolder.getContext())) {
+            return userService.getAllUsers();
+        }
+        return null;
     }
 
     @GetMapping(path = "/users/nick/{nick}")
@@ -158,12 +157,14 @@ public class UserController {
 
     @GetMapping(path = "/users/by-data/name/{name}")
     public Set<User> getUserByUserDataName(@PathVariable String name){
-       return  userService.getUsersByUserData(userService.getUserDataByName(name));
+        return userService.getUsersByUserData(userService.getUserDataByName(name));
     }
 
     @DeleteMapping(path = "/users")
     public void deleteUsersByUserIdArray(@RequestBody List<Long> ids){
-        userService.deleteUsersByIdArray(ids);
+        if(isAdmin(SecurityContextHolder.getContext())){
+            userService.deleteUsersByIdArray(ids);
+        }
     }
 
     @GetMapping(path = "/users/{id}/groups")
@@ -212,12 +213,16 @@ public class UserController {
 
     @PutMapping(path = "/users/roles/new/{name}")
     public void createUserRole(@PathVariable String name){
-        userService.createUserRole(name);
+        if(isAdmin(SecurityContextHolder.getContext())) {
+            userService.createUserRole(name);
+        }
     }
 
     @DeleteMapping(path = "/users/roles/{id}")
     public void deleteUserRoleById(@PathVariable Long id){
-        userService.deleteUserRole(userService.getUserRoleById(id));
+        if(isAdmin(SecurityContextHolder.getContext())) {
+            userService.deleteUserRole(userService.getUserRoleById(id));
+        }
     }
 
     @GetMapping(path = "/users/roles")
@@ -257,12 +262,65 @@ public class UserController {
 
     @DeleteMapping(path = "/users/{user_id}/roles/{role_id}")
     public void deleteUserRoleFromUser(@PathVariable Long role_id, @PathVariable Long user_id){
-        userService.deleteUserRoleFromUser(userService.getUserRoleById(role_id), userService.getUserById(user_id));
+        if(isAdmin(SecurityContextHolder.getContext())) {
+            userService.deleteUserRoleFromUser(userService.getUserRoleById(role_id), userService.getUserById(user_id));
+        }
     }
+
+
+//  USER DATA
+
+
+    @PutMapping(path = "/users/{user_id}/data/name/{data_name}/types/name/{type_name}")
+    public void smartCreateUserData(@PathVariable String data_name, @PathVariable String type_name, @PathVariable Long user_id){
+        if(hasPermissions(SecurityContextHolder.getContext(), userService.getUserById(user_id))){
+            UserData userData = new UserData(data_name);
+            userService.createUserData(userData);
+            UserDataType userDataType = userService.getUserDataTypeByName(type_name);
+            if(userDataType == null){
+                userDataType = userService.createUserDataType(new UserDataType(type_name));
+            }
+            userService.addUserDataToUser(
+                    userService.getUserById(user_id),
+                    userService.getUserDataByName(userData.getName()),
+                    userService.getUserDataTypeById(userDataType.getId())
+            );
+        }
+    }
+
+    @PutMapping(path = "/users/{user_id}/data/name/{data_name}/types/{type_id}")
+    public void smartCreateUserData(@PathVariable String data_name, @PathVariable Long type_id, @PathVariable Long user_id){
+        if(hasPermissions(SecurityContextHolder.getContext(), userService.getUserById(user_id))){
+            UserData userData = new UserData(data_name);
+            userService.createUserData(userData);
+            userService.addUserDataToUser(
+                    userService.getUserById(user_id),
+                    userService.getUserDataByName(userData.getName()),
+                    userService.getUserDataTypeById(type_id)
+            );
+        }
+    }
+
+    @DeleteMapping(path = "/users/{user_id}/data/{data_id}")
+    public void deleteUserData(@PathVariable Long data_id, @PathVariable Long user_id) {
+        if (hasPermissions(SecurityContextHolder.getContext(), userService.getUserById(user_id))) {
+            userService.deleteUserDataFromUser(
+                    userService.getUserById(user_id),
+                    userService.getUserDataById(data_id)
+            );
+        }
+    }
+
+
+
+
+
+
+
 
 //    USER DATA
 
-    @PutMapping(path = "/users/data/new")
+    @PutMapping(path = "/users/{}/data/new")
     public void  createUserData(@RequestBody UserData userData){
         userService.createUserData(userData);
     }
@@ -334,12 +392,11 @@ public class UserController {
         );
     }
 
-    @DeleteMapping(path = "/users/{user_id}/data/{data_id}/type/{type_id}")
-    public void deleteUserDataFromUser(@PathVariable Long data_id, @PathVariable Long type_id, @PathVariable Long user_id){
+    @DeleteMapping(path = "/users/{user_id}/data/{data_id}}")
+    public void deleteUserDataFromUser(@PathVariable Long data_id, @PathVariable Long user_id){
         userService.deleteUserDataFromUser(
                 userService.getUserById(user_id),
-                userService.getUserDataById(data_id),
-                userService.getUserDataTypeById(type_id)
+                userService.getUserDataById(data_id)
         );
     }
 
@@ -383,10 +440,16 @@ public class UserController {
     private boolean hasPermissions(SecurityContext securityContext, User userEvent){
         UserDetails currentUser = (UserDetails) securityContext.getAuthentication().getCredentials();
         User user = userService.getUserByNick(currentUser.getUsername());
+        return isAdmin(securityContext) || userEvent.getId().equals(user.getId());
+    }
+
+    private boolean isAdmin(SecurityContext securityContext){
+        UserDetails currentUser = (UserDetails) securityContext.getAuthentication().getCredentials();
+        User user = userService.getUserByNick(currentUser.getUsername());
         Set<UserRole> userRoles = new HashSet<>();
         userRoles.add(
                 userService.getUserRoleById(UserGroupRole.ADMIN)
         );
-        return user.getUserRoles().containsAll(userRoles) || userEvent.getId().equals(user.getId());
+        return user.getUserRoles().containsAll(userRoles);
     }
 }
