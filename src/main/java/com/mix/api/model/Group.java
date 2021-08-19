@@ -6,11 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "`group`")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,20 +17,24 @@ import java.util.Set;
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true,updatable = false)
+    @Column(nullable = false, unique = true,updatable = false)
     private Long id;
 
+
 //    RELATIONS
-
-    @ManyToMany(targetEntity =  GroupType.class)
-    private Set<GroupType> groupTypeList;
-
-    @ManyToMany(targetEntity = User.class)
-    private Set<User> users;
 
     @OneToMany(mappedBy = "group")
     private Set<UserGroupData> userGroupData;
 
     @OneToMany(mappedBy = "group")
     private Set<UserGroupRole> userGroupRoles;
+
+    @ManyToMany
+    @JoinTable(
+            name = "group_group_type",
+            joinColumns = {@JoinColumn (name = "group_type_id")},
+            inverseJoinColumns = { @JoinColumn (name = "group_id")}
+    )
+    private Set<GroupType> groupTypes;
+
 }

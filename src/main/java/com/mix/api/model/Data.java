@@ -1,16 +1,17 @@
 package com.mix.api.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
-@Table(name = "datas")
+@Table
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,21 +19,21 @@ import java.util.Set;
 public class Data {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true,updatable = false)
+    @Column(nullable = false, unique = true,updatable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column( nullable = false, length = 500)
+    @NotBlank
     private String name;
+
+    public Data (String name){
+        this.name = name;
+    }
 
 //    RELATIONS
 
-    @ManyToMany
-    private Set<DataStatus> dataStatusList;
-
-    @ManyToMany
-    private Set<DataType> dataTypeList;
-
-    @OneToMany(mappedBy = "data", targetEntity = UserGroupData.class)
+    @OneToMany(mappedBy = "data")
+    @JsonBackReference
     private Set<UserGroupData> userGroupData;
 
 }

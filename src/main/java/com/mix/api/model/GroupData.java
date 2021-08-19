@@ -15,21 +15,20 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserGroupRoleType {
+public class GroupData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column( nullable = false, unique = true,updatable = false)
+    @Column(nullable = false)
     private Long id;
 
-    @Column
+    @Column(nullable = false ,unique = true, updatable = false)
     @NotBlank
     private String name;
 
-    public UserGroupRoleType(String name){
+
+    public GroupData(String name) {
         this.name = name;
     }
+//    RELATIONS
 
-    @JoinColumn(updatable = false, referencedColumnName = "id")
-    @ManyToMany(cascade = CascadeType.REMOVE)
-    private Set<UserGroupRole> role;
 }

@@ -1,5 +1,8 @@
 package com.mix.api.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,39 +10,52 @@ import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Set;
 
 @Entity
-@Table(name = "users" )
+@Table
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties("userDataDataTypes")
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false, unique = true)
+    @Column( nullable = false, updatable = false, unique = true)
     private Long id;
 
-    @Column(name = "nick", nullable = false, unique = true, length = 500)
-    @NaturalId
+    @Column( nullable = false, unique = true, length = 500)
+    @NotBlank
     private String nick;
 
-    @Column(name = "pass", nullable = false, length = 115)
+    @Column( nullable = false, length = 115)
+    @NotBlank
     private String pass;
 
 //    RELATIONS
 
     @ManyToMany
-    private Set<Group> groupList;
+    @JoinTable(
+            name = "user_user_role",
+            inverseJoinColumns = { @JoinColumn(name = "user_id") },
+            joinColumns = { @JoinColumn(name = "role_id")}
+    )
+    @JsonBackReference
+    private Set <UserRole> userRoles;
 
-    @ManyToMany
-    private Set <UserRole> userRoleList;
+
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private Set<UserDataDataType> userDataDataTypes;
 
     @OneToMany(mappedBy = "user")
     private Set<UserGroupData> userGroupData;
 
     @OneToMany(mappedBy = "user")
     private Set<UserGroupRole> userGroupRoles;
+
+
 }

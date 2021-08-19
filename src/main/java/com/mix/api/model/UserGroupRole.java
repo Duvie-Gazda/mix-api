@@ -8,7 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user_group_roles")
+@Table
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,20 +16,27 @@ import javax.persistence.*;
 public class UserGroupRole{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true, updatable = false)
+    @Column( nullable = false, unique = true, updatable = false)
     private Long id;
+
+    public UserGroupRole(User user, Group group, UserGroupRoleType roleType){
+        this.group = group;
+        this.user = user;
+        this.roleType = roleType;
+    }
+
 
 //    CONNECTIONS
 
-    @JoinColumn(name = "user", updatable = false)
+    @JoinColumn(updatable = false)
     @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
     private User user;
 
-    @JoinColumn(name = "group", updatable = false)
+    @JoinColumn(updatable = false)
     @ManyToOne(cascade = CascadeType.REMOVE,optional = false)
     private Group group;
 
-    @JoinColumn(name = "user_group_role_type", updatable = false)
+    @JoinColumn(updatable = false)
     @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
     private UserGroupRoleType roleType;
 }

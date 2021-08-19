@@ -1,5 +1,7 @@
 package com.mix.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,24 +11,29 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "user_data")
+@Table
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@JsonIgnoreProperties("dataTypes")
 public class UserData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true, updatable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-//    RELATIONS
+    public UserData(String name) {
+        this.name = name;
+    }
 
-    @ManyToMany
-    @JoinColumn(name = "user", nullable = false, updatable = false)
-    private Set<User> users;
+    public UserData() {}
+    //    RELATIONS
+
+
+    @OneToMany( mappedBy = "dataType")
+    @JsonManagedReference
+    private Set<UserDataDataType> dataTypes;
 
 }

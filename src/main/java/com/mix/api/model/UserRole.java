@@ -6,26 +6,36 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
-@Table(name = "user_roles")
+@Table
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true, updatable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true, updatable = false)
+    @NotBlank
     private String name;
 
-//    RELATIONS
+    public UserRole(String name) {
+        this.name = name;
+    }
+
+    public UserRole() {}
+
+    //    RELATIONS
 
     @ManyToMany
+    @JoinTable(
+            name = "user_user_role",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "role_id")}
+    )
     private Set<User> users;
 }
