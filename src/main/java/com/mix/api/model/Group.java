@@ -20,6 +20,7 @@ public class Group {
     @Column(nullable = false, unique = true,updatable = false)
     private Long id;
 
+
 //    RELATIONS
 
     @OneToMany(mappedBy = "group")
@@ -34,6 +35,6 @@ public class Group {
             joinColumns = {@JoinColumn (name = "group_type_id")},
             inverseJoinColumns = { @JoinColumn (name = "group_id")}
     )
-    private Set<GroupType> groupType;
+    private Set<GroupType> groupTypes;
 
 }

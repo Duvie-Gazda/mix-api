@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
@@ -19,6 +20,7 @@ public class UserRole {
     private Long id;
 
     @Column(nullable = false, unique = true, updatable = false)
+    @NotBlank
     private String name;
 
     public UserRole(String name) {

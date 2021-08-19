@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
@@ -21,7 +22,12 @@ public class UserGroupRoleType {
     private Long id;
 
     @Column
+    @NotBlank
     private String name;
+
+    public UserGroupRoleType(String name){
+        this.name = name;
+    }
 
     @JoinColumn(updatable = false, referencedColumnName = "id")
     @ManyToMany(cascade = CascadeType.REMOVE)

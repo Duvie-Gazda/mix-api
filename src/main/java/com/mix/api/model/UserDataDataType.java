@@ -1,5 +1,6 @@
 package com.mix.api.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jdk.nashorn.internal.objects.annotations.Constructor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,8 @@ import javax.persistence.*;
 @Table
 @Getter
 @Setter
-public class UserDataDataType {
+public class
+UserDataDataType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -29,15 +31,20 @@ public class UserDataDataType {
 //    CONNECTIONS
 
     @ManyToOne(optional = false)
-    @JoinColumn(updatable = false)
+    @JoinColumn(updatable = false, referencedColumnName = "id")
+    @JsonBackReference
     private User user;
 
     @ManyToOne(optional = false)
-    @JoinColumn(updatable = false)
+    @JoinColumn(updatable = false, referencedColumnName = "id")
+    @JsonBackReference
+
     private UserData data;
 
     @ManyToOne (optional = false)
-    @JoinColumn(updatable = false)
+    @JoinColumn(updatable = false, referencedColumnName = "id")
+    @JsonBackReference
+
     private UserDataType dataType;
 
 }

@@ -13,6 +13,7 @@ public interface UserDataDataTypeRepository extends JpaRepository<UserDataDataTy
     public UserDataDataType findUserDataDataTypeByDataType(UserDataType dataType);
     public Set<UserDataDataType> findUserDataDataTypesByData(UserData data);
     public Set<UserDataDataType> findUserDataDataTypesByDataType(UserDataType dataType);
+    public Set<UserDataDataType> findUserDataDataTypeByUser(User user);
 
     public UserDataDataType findUserDataDataTypeByUserAndDataAndDataType(User user, UserData data, UserDataType dataType);
 }

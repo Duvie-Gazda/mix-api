@@ -2,9 +2,11 @@ package com.mix.api.controller.service;
 
 import com.mix.api.model.*;
 import com.mix.api.repository.*;
+import com.mix.api.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-   import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,12 +18,14 @@ import java.util.Set;
  *  # delete USER
  *  # update USER
  *  # delete USERS by ID array
- *  get All USERS
+ *  # get All USERS
  *  # get USERS by USER_ROLE
  *  # get USERS by USER_DATA
  *  # get USER by USER_DATA_TYPE
  *  # get USER by nick
  *  # get USER by id
+ *  # get USERS by Id List
+ *  # get USER'S GROUPS by USER
  *
  *
  *   ----- USER ROLE -----
@@ -33,7 +37,9 @@ import java.util.Set;
  *  # delete USER_ROLE from USER
  *  # get USER_ROLES by USER
  *  # get USER_ROLES by USERS
- * get all USER_ROLES
+ *  # get all USER_ROLES
+ *  # get USER_ROLES by USERS
+
  *
  *   ----- USER DATA -----
  *  # get USER_DATA by (name,id)
@@ -43,6 +49,17 @@ import java.util.Set;
  *  # add USER_DATA to USER
  *  # delete USER_DATA from USER
  *  # get USER_DATA by USER_DATA_TYPE
+ *  # get USER_DATA by User
+ *
+ *   ----- USER DATA TYPE ----
+ *  # create USER_DATA_TYPE by name
+ *  # create USER_DATA_TYPE
+ *  # delete USER_DATA_TYPE
+ *  # update USER_DATA_TYPE
+ *  # get USER_DATA_TYPE by USER_DATA
+ *  # get USER_DATA by id
+ *  # get USER_DATA by name
+ *
  *
  *
  * */
@@ -63,11 +80,19 @@ public class UserService {
     @Autowired
     private UserDataTypeRepository userDataTypeRepository;
 
+    @Autowired
+    private UserGroupRoleRepository userGroupRoleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
 
 //    USER
 
     public HttpStatus createUser (User user){
         try{
+            user.setPass(passwordEncoder.encode(user.getPass()));
             userRepository.save(user);
         }catch (Throwable throwable){
             return HttpStatus.BAD_GATEWAY;
@@ -86,6 +111,7 @@ public class UserService {
 
     public HttpStatus updateUser (User user){
         try{
+            user.setPass(passwordEncoder.encode(user.getPass()));
             userRepository.save(user);
         }catch (Throwable throwable){
             return HttpStatus.BAD_GATEWAY;
@@ -134,6 +160,24 @@ public class UserService {
         return userRepository.findUserById(id);
     }
 
+    public Set<User> getUsersByIdsArray(List<Long> idList){
+        Set<User> users = new HashSet<>();
+        for (Long id: idList) {
+            users.add(userRepository.findUserById(id));
+        }
+        return users;
+    }
+
+    public Set<Group> getGroupsByUser(User user){
+        Set<Group> groups = new HashSet<>();
+        Set<UserGroupRole> userGroupRoles = userGroupRoleRepository.findUserGroupRolesByUser(user);
+        for (UserGroupRole userGroupRole: userGroupRoles) {
+            groups.add(userGroupRole.getGroup());
+        }
+        return groups;
+    }
+
+
 
 //    USER ROLE
 
@@ -150,7 +194,6 @@ public class UserService {
         }
         return HttpStatus.OK;
     }
-
 
     public HttpStatus deleteUserRole(UserRole userRole){
         try {
@@ -195,15 +238,16 @@ public class UserService {
 
 
 
+
+
 //    USER DATA
 
     public UserData getUserDataByName(String name) {return userDataRepository.findUserDataByName(name);}
 
     public UserData getUserDataById(Long id) {return  userDataRepository.findUserDataById(id);}
 
-    public HttpStatus createUserData(String dataName){
+    public HttpStatus createUserData(UserData userData){
         try{
-            UserData userData = new UserData(dataName);
             userDataRepository.save(userData);
         } catch (Throwable throwable){
             return HttpStatus.BAD_GATEWAY;
@@ -256,5 +300,71 @@ public class UserService {
         }
         return userData;
     }
+
+    public Set<UserData> getUserDataByUser (User user){
+        Set<UserData> userData = new HashSet<>();
+        Set<UserDataDataType> dataDataTypes = dataDataTypeRepository.findUserDataDataTypeByUser(user);
+        for (UserDataDataType dataType: dataDataTypes) {
+            userData.add(dataType.getData());
+        }
+        return userData;
+    }
+
+
+//    USER DATA TYPE
+
+    public HttpStatus createUserDataType(UserDataType userDataType){
+        try{
+            userDataTypeRepository.save(userDataType);
+        }catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus createUserDataTypeByName(String name){
+        try {
+            userDataTypeRepository.save(new UserDataType(name));
+        }catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus deleteUserDataType(UserDataType userDataType){
+        try{
+            userDataTypeRepository.delete(userDataType);
+        }catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus updateUserDataType(UserDataType userDataType){
+        try{
+            userDataTypeRepository.save(userDataType);
+        }catch (Throwable throwable){
+            return HttpStatus.BAD_GATEWAY;
+        }
+        return HttpStatus.OK;
+    }
+
+    public Set<UserDataType> getUserDataTypeByUserData(UserData userData){
+        Set<UserDataDataType> dataDataTypes = dataDataTypeRepository.findUserDataDataTypesByData(userData);
+        Set<UserDataType> userDataTypes = new HashSet<>();
+        for (UserDataDataType dataDataType : dataDataTypes){
+            userDataTypes.add(dataDataType.getDataType());
+        }
+        return userDataTypes;
+    }
+
+    public UserDataType getUserDataTypeById(Long id){
+        return userDataTypeRepository.findUserDataTypeById(id);
+    }
+
+    public UserDataType getUserDataTypeByName(String name){
+        return userDataTypeRepository.findUserDataTypeByName(name);
+    }
+
 
 }

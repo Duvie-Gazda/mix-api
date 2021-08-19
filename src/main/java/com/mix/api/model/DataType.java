@@ -24,9 +24,12 @@ public class DataType {
     @Column(nullable = false, unique = true, updatable = false)
     private String name;
 
+    public DataType (String name){
+        this.name = name;
+    }
+
 //    RELATIONS
 
     @OneToMany(mappedBy = "dataType")
-    @JsonBackReference
     private Set<UserGroupData> userGroupData;
 }

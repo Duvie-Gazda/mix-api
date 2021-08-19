@@ -34,15 +34,15 @@ public class UserGroupData {
     private Group group;
 
     @ManyToOne(optional = false)
-    @JoinColumn(updatable = false)
+    @JoinColumn
     private Data data;
 
 
     @ManyToOne(optional = false)
-    @JoinColumn(updatable = false)
+    @JoinColumn
     private DataType dataType;
 
-    @JoinColumn ( updatable = false)
+    @JoinColumn
     @ManyToOne
     private DataStatus status;
 

@@ -19,6 +19,13 @@ public class UserGroupRole{
     @Column( nullable = false, unique = true, updatable = false)
     private Long id;
 
+    public UserGroupRole(User user, Group group, UserGroupRoleType roleType){
+        this.group = group;
+        this.user = user;
+        this.roleType = roleType;
+    }
+
+
 //    CONNECTIONS
 
     @JoinColumn(updatable = false)

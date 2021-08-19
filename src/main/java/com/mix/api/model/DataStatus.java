@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +23,11 @@ public class DataStatus {
     private Long id;
 
     @Column( nullable = false, unique = true, updatable = false)
+    @NotBlank
     private String name;
+
+    public DataStatus (String name){
+        this.name = name;
+    }
 
 }

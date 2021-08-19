@@ -19,6 +19,13 @@ public class GroupDataDataType {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    public GroupDataDataType (Group group, GroupData groupData, GroupDataType dataType){
+        this.data = groupData;
+        this.group = group;
+        this.type = dataType;
+    }
+
+
 //    RELATIONS
 
     @ManyToOne(optional = false)
