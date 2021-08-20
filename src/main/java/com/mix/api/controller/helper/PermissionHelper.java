@@ -25,7 +25,7 @@ public class PermissionHelper {
     }
 
     public boolean isAdmin(SecurityContext securityContext){
-        UserDetails currentUser = (UserDetails) securityContext.getAuthentication().getCredentials();
+        UserDetails currentUser = (UserDetails) securityContext.getAuthentication().getPrincipal();
         User user = userService.getUserByNick(currentUser.getUsername());
         Set<UserRole> userRoles = new HashSet<>();
         userRoles.add(

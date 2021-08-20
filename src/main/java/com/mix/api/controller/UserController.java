@@ -30,16 +30,16 @@ public class UserController {
 
 //    USER
 
-    @PutMapping(path = "/users/roles/name/{role_name}")
-    public void smartCrateUserWithRoleName(@PathVariable String role_name, @RequestBody User user){
-        userService.createUser(user);
-        UserRole userRole = new UserRole(role_name);
-        userService.createUserRole(userRole);
-        userService.addUserRoleToUser(
-                userRole,
-                user
-        );
-    }
+//    @PutMapping(path = "/users/roles/name/{role_name}")
+//    public void smartCrateUserWithRoleName(@PathVariable String role_name, @RequestBody User user){
+//        userService.createUser(user);
+//        UserRole userRole = new UserRole(role_name);
+//        userService.createUserRole(userRole);
+//        userService.addUserRoleToUser(
+//                userRole,
+//                user
+//        );
+//    }
 
     @PutMapping(path = "/uses/roles/{role_id}")
     public void smartCreateUserWithRoleId(@PathVariable Long role_id, @RequestBody User user){

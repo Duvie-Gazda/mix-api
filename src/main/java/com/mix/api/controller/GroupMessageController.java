@@ -101,7 +101,7 @@ public class GroupMessageController {
 
     private boolean hasPermissionsToAddUser(SecurityContext securityContext, User user,Group group){
         User currentUser = userService.getUserByNick(
-                ((UserDetails) securityContext.getAuthentication().getCredentials()).getUsername()
+                ((UserDetails) securityContext.getAuthentication().getPrincipal()).getUsername()
         );
         Set<User> users = groupUserService.getUserByGroup(group);
         if(users.contains(currentUser)){
@@ -117,7 +117,7 @@ public class GroupMessageController {
 
     private boolean hasPersmissionsToUserGroupWork(SecurityContext securityContext, User user,Group group){
         User currentUser = userService.getUserByNick(
-                ((UserDetails) securityContext.getAuthentication().getCredentials()).getUsername()
+                ((UserDetails) securityContext.getAuthentication().getPrincipal()).getUsername()
         );
         Set<User> users = groupUserService.getUserByGroup(group);
         if(users.contains(currentUser)){
@@ -134,7 +134,7 @@ public class GroupMessageController {
 
     private boolean hasPermissionsToAddMessage(SecurityContext securityContext, Group group){
         User currentUser = userService.getUserByNick(
-                ((UserDetails) securityContext.getAuthentication().getCredentials()).getUsername()
+                ((UserDetails) securityContext.getAuthentication().getPrincipal()).getUsername()
         );
         Set<User> users = groupUserService.getUserByGroup(group);
         if(users.contains(currentUser)){
