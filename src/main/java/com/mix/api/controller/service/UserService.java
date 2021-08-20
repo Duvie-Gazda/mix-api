@@ -14,6 +14,7 @@ import java.util.Set;
 
 /*
  *   ---- USER -----
+ *
  *  # create USER
  *  # delete USER
  *  # update USER
@@ -29,6 +30,7 @@ import java.util.Set;
  *
  *
  *   ----- USER ROLE -----
+ *
  *  # get USER_ROLE by (name, id)
  *  # create USER_ROLE
  *  # delete USER_ROLE
@@ -42,6 +44,7 @@ import java.util.Set;
 
  *
  *   ----- USER DATA -----
+ *
  *  # get USER_DATA by (name,id)
  *  # create USER_DATA
  *  # delete USER_DATA
@@ -52,6 +55,7 @@ import java.util.Set;
  *  # get USER_DATA by User
  *
  *   ----- USER DATA TYPE ----
+ *
  *  # create USER_DATA_TYPE by name
  *  # create USER_DATA_TYPE
  *  # delete USER_DATA_TYPE
@@ -283,9 +287,9 @@ public class UserService {
         return HttpStatus.OK;
     }
 
-    public HttpStatus deleteUserDataFromUser(User user, UserData data, UserDataType dataType){
+    public HttpStatus deleteUserDataFromUser(User user, UserData data){
         try {
-            dataDataTypeRepository.delete(dataDataTypeRepository.findUserDataDataTypeByUserAndDataAndDataType(user,data,dataType));
+            dataDataTypeRepository.delete(dataDataTypeRepository.findUserDataDataTypeByUserAndData(user,data));
         } catch (Throwable throwable){
             return HttpStatus.BAD_GATEWAY;
         }
@@ -313,13 +317,9 @@ public class UserService {
 
 //    USER DATA TYPE
 
-    public HttpStatus createUserDataType(UserDataType userDataType){
-        try{
-            userDataTypeRepository.save(userDataType);
-        }catch (Throwable throwable){
-            return HttpStatus.BAD_GATEWAY;
-        }
-        return HttpStatus.OK;
+    public UserDataType createUserDataType(UserDataType userDataType){
+        userDataTypeRepository.save(userDataType);
+        return userDataType;
     }
 
     public HttpStatus createUserDataTypeByName(String name){
