@@ -301,9 +301,9 @@ public class GroupService {
         return HttpStatus.OK;
     }
 
-    public HttpStatus deleteGroupDataFromGroup(GroupData data, Group group, GroupDataType groupDataType){
+    public HttpStatus deleteGroupDataFromGroup(GroupData data, Group group){
         try{
-            Set<GroupDataDataType> groupDataDataTypes = groupDataDataTypeRepository.findGroupDataDataTypeByDataAndGroupAndType(data, group, groupDataType);
+            Set<GroupDataDataType> groupDataDataTypes = groupDataDataTypeRepository.findGroupDataDataTypeByGroupAndData(group, data);
             groupDataDataTypeRepository.deleteAll(groupDataDataTypes);
         }catch (Throwable throwable){
             return HttpStatus.BAD_GATEWAY;

@@ -113,8 +113,8 @@ public class GroupController {
         groupService.updateGroup(group);
     }
 
-    @PutMapping(path = "/groups/{id}")
-    public void updateGroup(@PathVariable Long id){
+    @DeleteMapping(path = "/groups/{id}")
+    public void deleteGroup(@PathVariable Long id){
         groupService.deleteGroup(groupService.getGroupById(id));
     }
 
@@ -207,12 +207,11 @@ public class GroupController {
         );
     }
 
-    @DeleteMapping(path = "/groups/{group_id}/data/{data_id}/types/{type_id}")
-    public void deleteGroupDataFromGroup(@PathVariable Long group_id, @PathVariable Long data_id, @PathVariable Long type_id){
+    @DeleteMapping(path = "/groups/{group_id}/data/{data_id}}")
+    public void deleteGroupDataFromGroup(@PathVariable Long group_id, @PathVariable Long data_id){
             groupService.deleteGroupDataFromGroup(
                     groupService.getGroupDataById(data_id),
-                    groupService.getGroupById(group_id),
-                    groupService.getGroupDataTypeById(type_id)
+                    groupService.getGroupById(group_id)
             );
     }
 
