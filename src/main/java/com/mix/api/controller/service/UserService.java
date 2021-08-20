@@ -189,15 +189,11 @@ public class UserService {
 
     public UserRole getUserRoleById (Long id){ return userRoleRepository.findUserRoleById(id);}
 
-    public HttpStatus createUserRole(String roleName){
-        try {
-            UserRole userRole = new UserRole(roleName);
-            userRoleRepository.save(userRole);
-        } catch (Throwable throwable){
-            return HttpStatus.BAD_GATEWAY;
-        }
-        return HttpStatus.OK;
+
+    public void createUserRole(UserRole userRole){
+        userRoleRepository.save(userRole);
     }
+
 
     public HttpStatus deleteUserRole(UserRole userRole){
         try {

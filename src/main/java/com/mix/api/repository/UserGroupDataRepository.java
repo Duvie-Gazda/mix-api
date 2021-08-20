@@ -14,5 +14,5 @@ public interface UserGroupDataRepository extends JpaRepository<UserGroupData, Lo
     public Set<UserGroupData> findUserGroupDataByUserAndGroup(User user, Group group);
     public UserGroupData findUserGroupDataByTime(LocalDateTime time);
     public UserGroupData findUserGroupDataByStatus(DataStatus status);
-    public Set<UserGroupData> findUserGroupDataByData(Data data);
+    public UserGroupData findUserGroupDataByData(Data data);
 }

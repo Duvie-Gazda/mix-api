@@ -128,4 +128,8 @@ public class DataService {
     public void deleteDataType(DataType dataType){
         dataTypeRepository.delete(dataType);
     }
+
+    public DataType getDataTypeById(Long id){
+        return dataTypeRepository.findDataTypeById(id);
+    }
 }

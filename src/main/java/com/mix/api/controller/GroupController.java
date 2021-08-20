@@ -1,5 +1,6 @@
 package com.mix.api.controller;
 
+import com.mix.api.controller.helper.PermissionHelper;
 import com.mix.api.controller.service.GroupService;
 import com.mix.api.controller.service.UserService;
 import com.mix.api.model.*;
@@ -65,12 +66,30 @@ public class GroupController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PermissionHelper permissionHelper;
+
     @PutMapping(path = "/groups/new/{type_id}")
     public void createGroup(@PathVariable Long type_id){
         groupService.createGroupWithType(
                 userService.getUserByNick(SecurityContextHolder.getContext().getAuthentication().getName()),
                 groupService.getGroupTypeById(type_id)
         );
+    }
+
+    @PutMapping(path = "/groups/{group_name}/type/{type_name}/user/{user_id}")
+    public void smartCreateGroup(@PathVariable String group_name, @PathVariable String type_name, @PathVariable Long user_id){
+        if(permissionHelper.hasPermissions(SecurityContextHolder.getContext(),userService.getUserById(user_id))){
+            GroupType groupType = groupService.getGroupTypeByName(type_name);
+            if(groupType == null){
+                groupType = new GroupType(type_name);
+            }
+            groupService.createGroupType(groupType);
+            groupService.createGroup(
+                    userService.getUserById(user_id),
+                    groupType
+            );
+        }
     }
 
     @PutMapping(path = "/groups")
@@ -195,61 +214,84 @@ public class GroupController {
 
     @PutMapping(path = "/groups/data/types/new/{name}")
     public void createGroupDataTypeByName(@PathVariable String name) {
-        groupService.createGroupDataType(new GroupDataType(name));
+        if(permissionHelper.isAdmin(SecurityContextHolder.getContext())){
+            groupService.createGroupDataType(new GroupDataType(name));
+        }
     }
 
     @PutMapping(path = "/groups/data/types/")
     public void updateGroupDataType(@RequestBody GroupDataType groupDataType ) {
-        groupService.updateGroupDataType(groupDataType);
+        if(permissionHelper.isAdmin(SecurityContextHolder.getContext())) {
+            groupService.updateGroupDataType(groupDataType);
+        }
     }
 
     @DeleteMapping(path = "/groups/data/types")
     public void deleteGroupDataType(@RequestBody GroupDataType groupDataType ) {
-        groupService.deleteGroupDataType(groupDataType);
+        if(permissionHelper.isAdmin(SecurityContextHolder.getContext())) {
+            groupService.deleteGroupDataType(groupDataType);
+        }
     }
 
     @GetMapping(path = "/groups/data/{id}/types")
     public Set<GroupDataType> getGroupDataTypeByGroupData(@PathVariable Long id){
-        return groupService.getGroupDataTypeByGroupData(
-                groupService.getGroupDataById(id)
-        );
+        if(permissionHelper.isAdmin(SecurityContextHolder.getContext())) {
 
+            return groupService.getGroupDataTypeByGroupData(
+                    groupService.getGroupDataById(id)
+            );
+        }
+        return null;
     }
 
     @GetMapping(path = "/groups/{group_id}/data/{id}/types")
     public Set<GroupDataType> getGroupDataTypeByGroupDataAndGroup(@PathVariable Long id, @PathVariable Long group_id){
-        return groupService.getGroupDataTypeByGroupDataAndGroup(
-                groupService.getGroupDataById(id),
-                groupService.getGroupById(group_id)
-        );
-
+        if(permissionHelper.isAdmin(SecurityContextHolder.getContext())) {
+            return groupService.getGroupDataTypeByGroupDataAndGroup(
+                    groupService.getGroupDataById(id),
+                    groupService.getGroupById(group_id)
+            );
+        }
+        return null;
     }
 
 //    GROUP TYPE
 
     @PutMapping(path = "/groups/types/new/{name}")
     public void createGroupType(@PathVariable String name){
-        groupService.createGroupType(new GroupType(name));
+        if(permissionHelper.isAdmin(SecurityContextHolder.getContext())) {
+            groupService.createGroupType(new GroupType(name));
+        }
     }
 
     @DeleteMapping(path = "/groups/types/{id}")
     public void deleteGroupType(@PathVariable Long id){
-        groupService.deleteGroupType(groupService.getGroupTypeById(id));
+        if(permissionHelper.isAdmin(SecurityContextHolder.getContext())) {
+            groupService.deleteGroupType(groupService.getGroupTypeById(id));
+        }
     }
 
     @PutMapping(path = "/groups/types")
     public void updateGroupType(@RequestBody GroupType groupType){
-        groupService.updateGroupType(groupType);
+        if(permissionHelper.isAdmin(SecurityContextHolder.getContext())) {
+            groupService.updateGroupType(groupType);
+        }
     }
 
     @GetMapping(path = "/groups/{group_id}/types")
     public Set<GroupType> getGroupTypeByGroupId(@PathVariable Long group_id){
-        return groupService.getGroupTypeByGroup(groupService.getGroupById(group_id));
+        if(permissionHelper.isAdmin(SecurityContextHolder.getContext())) {
+            return groupService.getGroupTypeByGroup(groupService.getGroupById(group_id));
+        }
+        return null;
     }
 
     @GetMapping(path = "/groups/types")
     public Set<GroupType> getAllGroupType(){
-        return groupService.getAllGroupTypes();
+        if(permissionHelper.isAdmin(SecurityContextHolder.getContext())) {
+            return groupService.getAllGroupTypes();
+        }
+        return null;
     }
 
 }

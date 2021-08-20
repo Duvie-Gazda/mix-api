@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DataTypeRepository extends JpaRepository<DataType, Long> {
+    public DataType findDataTypeById(Long id);
 }
