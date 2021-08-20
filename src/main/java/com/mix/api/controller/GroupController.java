@@ -77,7 +77,7 @@ public class GroupController {
         );
     }
 
-    @PutMapping(path = "/groups/type/{type_name}/user/{user_id}")
+    @PutMapping(path = "/groups/type/name/{type_name}/user/{user_id}")
     public void smartCreateGroup(@PathVariable String type_name, @PathVariable Long user_id){
         if(permissionHelper.hasPermissions(SecurityContextHolder.getContext(),userService.getUserById(user_id))){
             GroupType groupType = groupService.getGroupTypeByName(type_name);
