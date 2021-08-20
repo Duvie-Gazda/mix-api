@@ -1,16 +1,14 @@
 package com.mix.api.controller;
 
-import com.mix.api.controller.consts.UserGroupRole;
+import com.mix.api.controller.consts.UserGroupRoleConst;
 import com.mix.api.controller.service.DataService;
 import com.mix.api.controller.service.GroupService;
 import com.mix.api.controller.service.UserGroupService;
 import com.mix.api.controller.service.UserService;
 import com.mix.api.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
 import java.util.Set;
 
 /*
@@ -54,7 +52,7 @@ public class GroupUserController {
         userGroupService.addUserToGroup(
                 groupService.getGroupById(group_id),
                 userService.getUserById(user_id),
-                userGroupService.getUserGroupRoleTypeById(UserGroupRole.ADMIN)
+                userGroupService.getUserGroupRoleTypeById(UserGroupRoleConst.ADMIN)
         );
     }
 

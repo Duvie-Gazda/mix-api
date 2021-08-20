@@ -1,9 +1,8 @@
 package com.mix.api.controller.service;
 
 import com.mix.api.model.*;
-import com.mix.api.repository.UserGroupDataRepository;
-import com.mix.api.repository.UserGroupRoleRepository;
-import com.mix.api.repository.UserGroupRoleTypeRepository;
+import com.mix.api.repository.*;
+import jdk.net.SocketFlow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -52,6 +51,7 @@ import java.util.Set;
 * get DATA's by TYPE
 * get DATA's by USER
 * get DATA's by GROUP
+* add USER_GROUP_DATA to GROUP
 *
 *   ---- DATA STATUS -----
 *
@@ -83,6 +83,12 @@ public class UserGroupService {
 
     @Autowired
     private UserGroupRoleTypeRepository userGroupRoleTypeRepository;
+
+    @Autowired
+    private DataRepository dataRepository;
+
+    @Autowired
+    private DataTypeRepository dataTypeRepository;
 
 
     //  USER GROUP ROLE
@@ -150,7 +156,7 @@ public class UserGroupService {
 
     public HttpStatus deleteUserFromGroup(Group group, User user){
         try {
-            userGroupRoleRepository.deleteAll(userGroupRoleRepository.findUserGroupRolesByUser(user));
+            userGroupRoleRepository.deleteAll(userGroupRoleRepository.findUserGroupRoleByGroupAndUser(group,user));
         }catch (Throwable throwable){
             return HttpStatus.BAD_GATEWAY;
         }
@@ -187,13 +193,9 @@ public class UserGroupService {
         return HttpStatus.OK;
     }
 
-    public HttpStatus updateUserGroupData(UserGroupData userGroupData){
-        try{
-            userGroupDataRepository.save(userGroupData);
-        }catch (Throwable throwable){
-            return HttpStatus.BAD_GATEWAY;
-        }
-        return HttpStatus.OK;
+    public UserGroupData updateUserGroupData(UserGroupData userGroupData){
+        userGroupDataRepository.save(userGroupData);
+        return userGroupData;
     }
 
     public HttpStatus deleteUserGroupData(UserGroupData userGroupData){
@@ -213,7 +215,7 @@ public class UserGroupService {
         return  userGroupDataRepository.findUserGroupDataByTime(time);
     }
 
-    public Set<UserGroupData> getUserGroupDataByData (Data data){
+    public UserGroupData getUserGroupDataByData (Data data){
         return userGroupDataRepository.findUserGroupDataByData(data);
     }
 
@@ -231,5 +233,19 @@ public class UserGroupService {
         return userGroupRoleRepository.findUserGroupRoleByRoleType(userGroupRoleType);
     }
 
+    public UserGroupData addUserGroupDataToGroup(User user, Group group, Data data, DataType dataType, DataStatus dataStatus, LocalDateTime time){
+        UserGroupData userGroupData = new UserGroupData(time, user, group, data, dataType, dataStatus);
+        userGroupDataRepository.save(userGroupData);
+        return userGroupData;
+    }
 
+    public Data getDataById(Long id){
+        return dataRepository.findDataById(id);
+    }
+
+//  GROUP DATA TYPE
+
+    public DataType getDataTypeById(Long id){
+        return dataTypeRepository.findDataTypeById(id);
+    }
 }

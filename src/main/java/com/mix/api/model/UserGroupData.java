@@ -23,7 +23,15 @@ public class UserGroupData {
     @Column( updatable = false, nullable = false)
     private LocalDateTime time;
 
-//    CONNECTIONS
+    public UserGroupData(LocalDateTime time, User user, Group group, Data data, DataType dataType, DataStatus status) {
+        this.time = time;
+        this.user = user;
+        this.group = group;
+        this.data = data;
+        this.dataType = dataType;
+        this.status = status;
+    }
+    //    CONNECTIONS
 
     @ManyToOne( optional = false)
     @JoinColumn(updatable = false)

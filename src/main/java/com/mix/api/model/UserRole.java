@@ -31,7 +31,7 @@ public class UserRole {
 
     //    RELATIONS
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_user_role",
             joinColumns = { @JoinColumn(name = "user_id") },
