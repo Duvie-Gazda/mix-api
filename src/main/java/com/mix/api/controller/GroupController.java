@@ -77,12 +77,28 @@ public class GroupController {
         );
     }
 
-    @PutMapping(path = "/groups/{group_name}/type/{type_name}/user/{user_id}")
-    public void smartCreateGroup(@PathVariable String group_name, @PathVariable String type_name, @PathVariable Long user_id){
+    @PutMapping(path = "/groups/type/{type_name}/user/{user_id}")
+    public void smartCreateGroup(@PathVariable String type_name, @PathVariable Long user_id){
         if(permissionHelper.hasPermissions(SecurityContextHolder.getContext(),userService.getUserById(user_id))){
             GroupType groupType = groupService.getGroupTypeByName(type_name);
             if(groupType == null){
                 groupType = new GroupType(type_name);
+            }
+            groupService.createGroupType(groupType);
+            groupService.createGroup(
+                    userService.getUserById(user_id),
+                    groupType
+            );
+        }
+    }
+
+
+    @PutMapping(path = "/groups/type/{type_id}/user/{user_id}")
+    public void smartCreateGroup(@PathVariable Long type_id, @PathVariable Long user_id){
+        if(permissionHelper.hasPermissions(SecurityContextHolder.getContext(),userService.getUserById(user_id))){
+            GroupType groupType = groupService.getGroupTypeById(type_id);
+            if(groupType == null){
+                return;
             }
             groupService.createGroupType(groupType);
             groupService.createGroup(
